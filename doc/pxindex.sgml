@@ -57,17 +57,17 @@ manpage.1: manpage.sgml
   <refnamediv>
     <refname>&dhpackage;</refname>
 
-    <refpurpose>Read Paradox file and show information or dump the records in different formats</refpurpose>
+    <refpurpose>Creates an index for a paradox database</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <cmdsynopsis>
       <command>&dhpackage;</command>
 
       <arg><option>-h | --help <replaceable></replaceable></option></arg>
+      <arg><option>--version <replaceable></replaceable></option></arg>
 
       <arg><option>-v | --verbose <replaceable></replaceable></option></arg>
-      <arg><option>-o FILE | --output-file=FILE <replaceable></replaceable></option></arg>
-      <arg><option>-n FILE | --primary-index-file=FILE <replaceable></replaceable></option></arg>
+      <arg><option>-d FILE | --database-file=FILE <replaceable></replaceable></option></arg>
       <arg>FILE </arg>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -77,19 +77,12 @@ manpage.1: manpage.sgml
     <para>This manual page documents the
       <command>&dhpackage;</command> command.</para>
 
-    <para>&dhpackage; reads Paradox files and prints information about
-		  the file or dumps the records to stdout or a file. &dhpackage; is mostly
-			applied on Paradox .DB files but can also be used to show
-			information about other Paradox files. It can also read associated
-			blob files (.MB) and write each blob into a separate file.
+    <para>&dhpackage; reads a Paradox database file and creates an
+		  index file. Currently only primary index files are supported.
+			The database must have at least one primary key. The database
+			must also be sorted by that key. &dhpackage; will not modify
+			the database.
       </para>
-		<para>&dhpackage; can be used to convert Paradox databases into spreadsheet
-		  readable CSV files (comma separated values) or SQL insert statements to
-			import the records into a relational database. The sql output is optimized
-			to be used with PostgreSQL.</para>
-		<para>The programm currently supports only a subset of possible field
-		  types.  These are strings, short and long integers, boolean, blobs
-			and decimal numbers.</para>
   </refsect1>
   <refsect1>
     <title>OPTIONS</title>
@@ -108,14 +101,12 @@ manpage.1: manpage.sgml
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>-v</option>
-          <option>--version</option>
+        <term><option>--version</option>
         </term>
         <listitem>
           <para>Show version of program.</para>
         </listitem>
       </varlistentry>
-      <varlistentry>
         <term><option>-o</option>
           <option>--output-file</option>
         </term>

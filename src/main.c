@@ -45,6 +45,8 @@ void usage(char *progname) {
 	printf("\n\n");
 	printf(_("  -h, --help          this usage information."));
 	printf("\n");
+	printf(_("  --version           show version information."));
+	printf("\n");
 	printf(_("  -v, --verbose       be more verbose."));
 	printf("\n");
 	printf(_("  -d, --database-file=FILE read database from this file."));
@@ -122,6 +124,7 @@ int main(int argc, char *argv[]) {
 			{"help", 0, 0, 'h'},
 			{"use-gsf", 0, 0, 8},
 			{"database-file", 1, 0, 'd'},
+			{"version", 0, 0, 11},
 			{0, 0, 0, 0}
 		};
 		c = getopt_long (argc, argv, "vo:d:h",
@@ -134,6 +137,10 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'h':
 				usage(progname);
+				exit(0);
+				break;
+			case 11:
+				fprintf(stdout, "%s\n", VERSION);
 				exit(0);
 				break;
 			case 'v':
