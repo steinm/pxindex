@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pxindex 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-18 07:47+0100\n"
+"POT-Creation-Date: 2004-01-15 08:20+0100\n"
 "PO-Revision-Date: 2003-03-05 08:51+0100\n"
 "Last-Translator: Uwe Steinmann <uwe@steinmann.cx>\n"
 "Language-Team: de <uwe@steinmann.cx>\n"
@@ -22,6 +22,7 @@ msgid "Version: %s %s http://sourceforge.net/projects/pxlib"
 msgstr "Version: %s %s http://sourceforge.net/projects/pxlib"
 
 #: src/main.c:40
+#, c-format
 msgid "Copyright: Copyright (C) 2003 Uwe Steinmann <uwe@steinmann.cx>"
 msgstr "Copyright: Copyright (C) 2003 Uwe Steinmann <uwe@steinmann.cx>"
 
@@ -31,47 +32,58 @@ msgid "Usage: %s [OPTIONS] FILE"
 msgstr "Aufruf: %s [OPTION] DATEI"
 
 #: src/main.c:44
+#, c-format
 msgid "Options:"
 msgstr "Optionen:"
 
 #: src/main.c:46
+#, c-format
 msgid "  -h, --help          this usage information."
 msgstr "  -h, --help          diese Hilfe."
 
 #: src/main.c:48
+#, c-format
 msgid "  --version           show version information."
 msgstr "  --version           zeige Programmversion."
 
 #: src/main.c:50
+#, c-format
 msgid "  -v, --verbose       be more verbose."
 msgstr "  -v, --verbose       mehr Informationen anzeigen."
 
 #: src/main.c:52
+#, c-format
 msgid "  -d, --database-file=FILE read database from this file."
 msgstr "  -d, --database-file=FILE lese Datenbank aus dieser Datei."
 
 #: src/main.c:56
+#, c-format
 msgid "  --use-gsf           use gsf library to read input file."
 msgstr ""
 "  --use-gsf           benutze gsf-Bibliothek zum Lesen der Eingabedatei."
 
 #: src/main.c:64
+#, c-format
 msgid "libpx uses librecode for recoding."
 msgstr "libpx benutzt librecode zum reencodieren."
 
 #: src/main.c:67
+#, c-format
 msgid "libpx uses iconv for recoding."
 msgstr "libpx benutzt iconv zum reencodieren."
 
 #: src/main.c:70
+#, c-format
 msgid "libpx has no support for recoding."
 msgstr "libpx unterstützt nicht das reencodieren."
 
 #: src/main.c:75
+#, c-format
 msgid "libpx has been compiled for big endian architecture."
 msgstr "libpx wurde für Architekturen mit big endian übersetzt."
 
 #: src/main.c:77
+#, c-format
 msgid "libpx has been compiled for little endian architecture."
 msgstr "libpx wurde für Architekturen mit little endian übersetzt."
 
@@ -94,34 +106,41 @@ msgid "libpx has version: %d.%d.%d"
 msgstr "libpx ist Version: %d.%d.%d"
 
 #: src/main.c:163
+#, c-format
 msgid "You must at least specify an output file."
 msgstr "Sie müssen mindestes eine Ausgabedatei angegeben."
 
 #: src/main.c:178 src/main.c:236
+#, c-format
 msgid "Could not create new paradox instance."
 msgstr "Konnte keine neue Paradox-Instanz erzeugen."
 
 #: src/main.c:197
+#, c-format
 msgid "Could not open gsf input file."
 msgstr "Konnte Eingabedatei mit gsf-Bibliothek nicht öffnen."
 
 #: src/main.c:206 src/main.c:213
+#, c-format
 msgid "Could not open input file."
 msgstr "Sie müssen mindestes eine Eingabedatei angegeben."
 
 #: src/main.c:224
+#, c-format
 msgid "The database file has no primary key fields."
 msgstr "Die Datenbank hat keine Primärschlüsselfelder."
 
-#: src/main.c:241
+#. Create the schema for the primary index file.
+#: src/main.c:242
 msgid "Could not get memory for field definitions."
 msgstr "Konnte Speicher für Felddefinitionen nicht allozieren."
 
-#: src/main.c:249
+#: src/main.c:250
 #, c-format
 msgid "Could not get field definition of %i. primary key field."
 msgstr "Konnte Felddefinition des %i. Primärschlüssels nicht erfragen."
 
-#: src/main.c:260
+#: src/main.c:261
+#, c-format
 msgid "Could not create primary index file."
 msgstr "Konnte Datei für den Primärindex nicht anlegen."
