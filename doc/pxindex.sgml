@@ -107,117 +107,31 @@ manpage.1: manpage.sgml
           <para>Show version of program.</para>
         </listitem>
       </varlistentry>
-        <term><option>-o</option>
-          <option>--output-file</option>
-        </term>
-        <listitem>
-          <para>All output except for usage information and error messages
-					 will be written to the given file instead of stdout.</para>
-        </listitem>
-      </varlistentry>
       <varlistentry>
         <term><option>-v</option>
           <option>--verbose</option>
         </term>
         <listitem>
-          <para>Output some more information from the header. This option is only
-					 needed if you want see some internal information which are usually
-					 not of any interessed.</para>
+          <para>Output some more information while creating the index.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>-o FILE</option>
-          <option>--output=FILE</option>
+        <term><option>-d FILE</option>
+          <option>--database-file=FILE</option>
         </term>
         <listitem>
-          <para>Dump records into given file instead of stdout.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>-n FILE</option>
-          <option>--primary-index-file=FILE</option>
-        </term>
-        <listitem>
-          <para>Read the primary index from file. This option is only valid
-					  it you are reading a database file.</para>
+          <para>Read the database from this file.</para>
         </listitem>
       </varlistentry>
     </variablelist>
 
-		<para>The none optional parameter FILE is the Paradox file which shall
-		 be read.</para>
-		<para>If you pass two or more options to set the output format then
-		 each format
-		 will be output one after the other starting with csv followed by
-		 html and finally sql.</para>
-		<para>The default field separator if exporting csv format is a tabulator.
-		 Fields will be enclosed in " if required.</para>
+		<para>The none optional parameter FILE is the index file which shall
+		 be created.</para>
   </refsect1>
-	<refsect1>
-	  <title>PRIMARY INDEX FILES</title>
-		<para>&dhpackage; supports not just the reading and outputting of DB
-		  files but also
-		  of primary and secondary index files (PX, XGx, YGx files). This section
-			will only focus on primary index files. Do not confuse this with the
-			option <option>--primary-index-file</option> which is just for
-			accelerated access on database records in a .DB file.</para>
-		<para>An index file
-			has the same basename as the database file. If it exists the database
-			file will have the header field 'Num. of prim. Key fields' set to a
-			value greater than 0. An index file is actually a regular database file
-			with some extra columns and a slightly different header. There is no
-			further reference between the database and index file beside the file
-			name. You can always read a database without its primary index, but
-			access will be slower.</para>
-		<para>Each database file may have 1 or more primary key fields. The number
-			is stored in the header of the database file.  Primary key fields
-			must be in the first n columns of the database file. If for
-			example the number of primary key fields is set to two, then the
-			first two fields in the database file are primary keys.
-			Consequently the .PX file will have these two fields as well. The
-			values of the primay key fields in the index file are those of the
-			first record in the referenced data block (see below).</para>
-		<para>Each primary index file has beside the key fields three further
-		  columns which point to data blocks in the database file. In order
-			to understand these columns you need to know that database files are
-			segmented into datablocks. The size of each data block can be calculated
-			from the 'Max. Table size' value in the database file header. Datablocks
-			are organized in a double linked list. Each
-			data block is prefaced by a six bytes data block header which contains
-			references to the previous and next data block in the list and the size
-			of the block.</para>
-		<para>The n+1 column (with n being the number of primary key fields) in the
-		  primary index file contains the block number in the database file.
-			The first block has number 1. The block number is
-			used to locate the data block in the database file. It can be calculated
-			by `(blocknumber - 1) * datablocksize + headersize'.
-		  The n+2 column contains the number of records in the
-		  referenced data block.</para>
-		<para>Beside records whose block numbers point to blocks in the database
-		  file, there are also so called index blocks. Its block numbers reffer
-			other index blocks in the primary index itself. The reason for this is
-			the tree structure of the index which is explained in the file
-			/usr/share/doc/pxlib-doc/paradox4.txt. The number of records in this
-			index blocks is the sum of all records referenzed by the records in
-			the block this block references. If for example you have 100 records
-			each pointing to a data block in the database with 5 records each,
-			and those 100 records are store in a datablock number 1 in the index
-			file, then the reference from an index record to this block number
-			1 will have a record count 100*5. The index record itself will be part
-			of an index block.</para>
-		<para>The last column has some unknown meaning. It is often set to
-		  zero.</para>
-		<para>When you output the content of an primary index file you will
-		  notice a forth extra column. This one is added by &dhpackage; itself.
-			It is the block number the current record is stored in. It is very
-			helpful when investigating the tree structure of the index file.
-			Quite often one will find index blocks at the begining of an index
-			file.</para>
-	</refsect1>
   <refsect1>
     <title>SEE ALSO</title>
 
-    <para>pxwrite(1), recode(1), iconv(1)</para>
+    <para>pxview(1), pxwrite(1), recode(1), iconv(1)</para>
 
   </refsect1>
   <refsect1>
