@@ -238,6 +238,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
+	/* Create the schema for the primary index file. */
 	if((pxf = (pxfield_t *) pxindexdoc->malloc(pxindexdoc, numprimkeys*sizeof(pxfield_t), _("Could not get memory for field definitions."))) == NULL){
 		fprintf(stderr, "\n");
 		exit(1);
@@ -266,7 +267,6 @@ int main(int argc, char *argv[]) {
 
 	/* Free resources and close files {{{
 	 */
-
 	PX_close(pxindexdoc);
 	PX_delete(pxindexdoc);
 
