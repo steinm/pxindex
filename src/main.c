@@ -86,20 +86,16 @@ void usage(char *progname) {
 /* main() {{{
  */
 int main(int argc, char *argv[]) {
-	pxhead_t *pxh;
 	pxfield_t *pxf;
 	pxdoc_t *pxdoc = NULL;
 	pxdoc_t *pxindexdoc = NULL;
 	char *progname = NULL;
-	char *data, *buffer = NULL;
-	int i, j, c; // general counters
+	int i, c; // general counters
 	int usegsf = 0;
 	int verbose = 0;
 	int numprimkeys;
 	char *inputfile = NULL;
 	char *outputfile = NULL;
-	FILE *infp = NULL;
-	FILE *outfp = NULL;
 
 #ifdef MEMORY_DEBUGGING
 	PX_mp_init();
@@ -247,7 +243,7 @@ int main(int argc, char *argv[]) {
 		pxfield_t *pfield;
 		pfield = PX_get_field(pxdoc, i);
 		if(!pfield) {
-			fprintf(stderr, _("Could not get field definition of %i. primary key field."));
+			fprintf(stderr, _("Could not get field definition of %i. primary key field."), i);
 			fprintf(stderr, "\n");
 			exit(1);
 		}
