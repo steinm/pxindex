@@ -1,0 +1,13 @@
+Source: pxindex
+Section: misc 
+Priority: optional
+Maintainer: Uwe Steinmann <uwe@steinmann.cx>
+Build-Depends: debhelper (>> 4.0.0), pxlib-dev (>= 0.2.2), libsqlite0-dev (>= 2.8.5)
+Standards-Version: 3.6.1
+
+Package: pxindex
+Architecture: any
+Depends: ${shlibs:Depends}, pxlib1 (>= 0.2.5)
+Description: Creates index file for a Paradox database
+ pxdiff read a paradox database an creates a primary index
+ file for it.
