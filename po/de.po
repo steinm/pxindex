@@ -44,7 +44,7 @@ msgstr "  --version           zeige Programmversion."
 
 #: src/main.c:50
 msgid "  -v, --verbose       be more verbose."
-msgstr "  -v, --verbose       mehr Informationen anzeigen"
+msgstr "  -v, --verbose       mehr Informationen anzeigen."
 
 #: src/main.c:52
 msgid "  -d, --database-file=FILE read database from this file."
