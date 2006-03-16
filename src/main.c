@@ -25,6 +25,8 @@
 #define _(String) String
 #endif
 
+int qsort_len;
+
 void errorhandler(pxdoc_t *p, int error, const char *str, void *data) {
 	  fprintf(stderr, "PXLib: %s\n", str);
 }
@@ -50,6 +52,8 @@ void usage(char *progname) {
 	printf(_("  -v, --verbose       be more verbose."));
 	printf("\n");
 	printf(_("  -d, --database-file=FILE read database from this file."));
+	printf("\n");
+	printf(_("  -s, --secindex=NUMBER create a secondary from field NUMBER."));
 	printf("\n");
 #ifdef HAVE_GSF
 	if(PX_has_gsf_support()) {
@@ -83,6 +87,14 @@ void usage(char *progname) {
 }
 /* }}} */
 
+/* qsort_comp_records() {{{
+ * Function passed to qsort for comparing records.
+ */
+int qsort_comp_records(const void *data1, const void *data2) {
+	return(memcmp(*(char **)data1, *(char **)data2, qsort_len));
+}
+/* }}} */
+
 /* main() {{{
  */
 int main(int argc, char *argv[]) {
@@ -93,7 +105,8 @@ int main(int argc, char *argv[]) {
 	int i, c; // general counters
 	int usegsf = 0;
 	int verbose = 0;
-	int numprimkeys;
+	int numprimkeys, numrecords;
+	int secindex = 0;
 	char *inputfile = NULL;
 	char *outputfile = NULL;
 
@@ -120,10 +133,11 @@ int main(int argc, char *argv[]) {
 			{"help", 0, 0, 'h'},
 			{"use-gsf", 0, 0, 8},
 			{"database-file", 1, 0, 'd'},
+			{"secindex", 1, 0, 's'},
 			{"version", 0, 0, 11},
 			{0, 0, 0, 0}
 		};
-		c = getopt_long (argc, argv, "vo:d:h",
+		c = getopt_long (argc, argv, "vo:d:s:h",
 				long_options, &option_index);
 		if (c == -1)
 			break;
@@ -147,6 +161,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'd':
 				inputfile = strdup(optarg);
+				break;
+			case 's':
+				secindex = atoi(optarg);
 				break;
 		}
 	}
@@ -216,6 +233,7 @@ int main(int argc, char *argv[]) {
 	/* }}} */
 
 	numprimkeys = pxdoc->px_head->px_primarykeyfields;
+	numrecords = pxdoc->px_head->px_numrecords;
 	if(numprimkeys <= 0) {
 		fprintf(stderr, _("The database file has no primary key fields."));
 		fprintf(stderr, "\n");
@@ -234,31 +252,132 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	/* Create the schema for the primary index file. */
-	if((pxf = (pxfield_t *) pxindexdoc->malloc(pxindexdoc, numprimkeys*sizeof(pxfield_t), _("Could not get memory for field definitions."))) == NULL){
-		fprintf(stderr, "\n");
-		exit(1);
-	}
-	for(i=0; i<numprimkeys; i++) {
+	if(secindex) {
+		char *data, *datai;
+		int primindexlen, secindexlen, secindexoffset;
+		struct _sortdata {char *secdata; char *primdata; unsigned int recno; unsigned int blockno;};
+		typedef struct _sortdata sortdata_t;
+		sortdata_t *sortdata;
+
+		/* Create the schema for the secondary index file */
 		pxfield_t *pfield;
-		pfield = PX_get_field(pxdoc, i);
+		pfield = PX_get_field(pxdoc, secindex-1);
 		if(!pfield) {
-			fprintf(stderr, _("Could not get field definition of %i. primary key field."), i);
+			fprintf(stderr, _("Could not get field definition of %i. secondary key field."), secindex+1);
 			fprintf(stderr, "\n");
 			exit(1);
 		}
-		pxf[i].px_fname = px_strdup(pxindexdoc, pfield->px_fname);
-		pxf[i].px_ftype = pfield->px_ftype;
-		pxf[i].px_flen = pfield->px_flen;
-		pxf[i].px_fdc = pfield->px_fdc;
-	}
+		if((pxf = (pxfield_t *) pxindexdoc->malloc(pxindexdoc, (numprimkeys+2)*sizeof(pxfield_t), _("Allocate memory for field definitions."))) == NULL){
+			fprintf(stderr, _("Could not allocate memory for field definitions."));
+			fprintf(stderr, "\n");
+			exit(1);
+		}
+		pxf[0].px_fname = px_strdup(pxindexdoc, pfield->px_fname);
+		pxf[0].px_ftype = pfield->px_ftype;
+		pxf[0].px_flen = pfield->px_flen;
+		pxf[0].px_fdc = pfield->px_fdc;
+		primindexlen = 0;
+		for(i=0; i<numprimkeys; i++) {
+			pfield = PX_get_field(pxdoc, i);
+			if(!pfield) {
+				fprintf(stderr, _("Could not get field definition of %i. primary key field."), i);
+				fprintf(stderr, "\n");
+				exit(1);
+			}
+			pxf[i+1].px_fname = px_strdup(pxindexdoc, pfield->px_fname);
+			pxf[i+1].px_ftype = pfield->px_ftype;
+			pxf[i+1].px_flen = pfield->px_flen;
+			pxf[i+1].px_fdc = pfield->px_fdc;
+			primindexlen  += pfield->px_flen;
+		}
+		pxf[i+1].px_fname = px_strdup(pxindexdoc, "Blk Num");
+		pxf[i+1].px_ftype = pxfShort;
+		pxf[i+1].px_flen = 2;
+		pxf[i+1].px_fdc = 0;
+		if(0 > PX_create_file(pxindexdoc, pxf, numprimkeys+2, outputfile, pxfFileTypIncSecIndexG)) {
+			fprintf(stderr, _("Could not create secondary index file."));
+			fprintf(stderr, "\n");
+			exit(1);
+		}
+		pxindexdoc->px_head->px_indexfieldnumber = secindex;
 
-	if(0 > PX_create_file(pxindexdoc, pxf, numprimkeys, outputfile, pxfFileTypPrimIndex)) {
-		fprintf(stderr, _("Could not create primary index file."));
-		fprintf(stderr, "\n");
-		exit(1);
+		/* Determine offset and len of secondary index field */
+		secindexoffset = 0;
+		secindexlen = 0;
+		for(i=0; i<PX_get_num_fields(pxdoc); i++) {
+			pfield = PX_get_field(pxdoc, i);
+			if(!pfield) {
+				fprintf(stderr, _("Could not get field definition of %i. primary key field."), i);
+				fprintf(stderr, "\n");
+				exit(1);
+			}
+			if(i == secindex-1) {
+				secindexlen = pfield->px_flen;
+				break;
+			}
+			secindexoffset += pfield->px_flen;
+		}
+		fprintf(stderr, "primary index: %d\n", primindexlen);
+		fprintf(stderr, "secondary index: %d, %d\n", secindexoffset, secindexlen);
+		if((data = pxdoc->malloc(pxdoc, pxdoc->px_head->px_recordsize, _("Allocate memory for record data of database file."))) == NULL) {
+			fprintf(stderr, _("Could not allocate memory for record data of database file."));
+			fprintf(stderr, "\n");
+			exit(1);
+		}
+		if((datai = pxdoc->malloc(pxindexdoc, pxindexdoc->px_head->px_recordsize, _("Allocate memory for record data of index file."))) == NULL) {
+			fprintf(stderr, _("Could not allocate memory for record data of index file."));
+			fprintf(stderr, "\n");
+			exit(1);
+		}
+		/* sort the records by the secondary index */
+		sortdata = pxdoc->malloc(pxdoc, numrecords*sizeof(struct _sortdata), _("Allocate memory for sorting records."));
+		for(i=0; i<numrecords; i++) {
+			pxdatablockinfo_t pxdbinfo;
+			int isdeleted = 0;
+			if(PX_get_record2(pxdoc, i, data, &isdeleted, &pxdbinfo)) {
+				sortdata[i].secdata = pxdoc->malloc(pxdoc, secindexlen, _("Allocate memory for field data of secondary index."));
+				sortdata[i].primdata = pxdoc->malloc(pxdoc, primindexlen, _("Allocate memory for field data of primary index."));
+				memcpy(sortdata[i].secdata, &data[secindexoffset], secindexlen);
+				memcpy(sortdata[i].primdata, &data[0], primindexlen);
+				sortdata[i].recno = i;
+				sortdata[i].blockno = pxdbinfo.number;
+			}
+		}
+		qsort_len = secindexlen;
+		qsort((void *) sortdata, numrecords, sizeof(struct _sortdata), qsort_comp_records);
+		for(i=0; i<numrecords; i++) {
+			memcpy(datai, sortdata[i].secdata, secindexlen);
+			memcpy(&datai[secindexlen], sortdata[i].primdata, primindexlen);
+			PX_put_data_short(pxindexdoc, &datai[secindexlen+primindexlen], 2, sortdata[i].blockno);
+			PX_put_record(pxindexdoc, datai);
+		}
+	} else {
+		/* Create the schema for the primary index file. */
+		if((pxf = (pxfield_t *) pxindexdoc->malloc(pxindexdoc, numprimkeys*sizeof(pxfield_t), _("Could not get memory for field definitions."))) == NULL){
+			fprintf(stderr, "\n");
+			exit(1);
+		}
+		for(i=0; i<numprimkeys; i++) {
+			pxfield_t *pfield;
+			pfield = PX_get_field(pxdoc, i);
+			if(!pfield) {
+				fprintf(stderr, _("Could not get field definition of %i. primary key field."), i);
+				fprintf(stderr, "\n");
+				exit(1);
+			}
+			pxf[i].px_fname = px_strdup(pxindexdoc, pfield->px_fname);
+			pxf[i].px_ftype = pfield->px_ftype;
+			pxf[i].px_flen = pfield->px_flen;
+			pxf[i].px_fdc = pfield->px_fdc;
+		}
+
+		if(0 > PX_create_file(pxindexdoc, pxf, numprimkeys, outputfile, pxfFileTypPrimIndex)) {
+			fprintf(stderr, _("Could not create primary index file."));
+			fprintf(stderr, "\n");
+			exit(1);
+		}
+		PX_write_primary_index(pxdoc, pxindexdoc);
 	}
-	PX_write_primary_index(pxdoc, pxindexdoc);
 	/* }}} */
 
 	/* Free resources and close files {{{
