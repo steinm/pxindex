@@ -352,6 +352,7 @@ int main(int argc, char *argv[]) {
 			PX_put_record(pxindexdoc, datai);
 		}
 	} else {
+		int filetype;
 		/* Create the schema for the primary index file. */
 		if((pxf = (pxfield_t *) pxindexdoc->malloc(pxindexdoc, numprimkeys*sizeof(pxfield_t), _("Could not get memory for field definitions."))) == NULL){
 			fprintf(stderr, "\n");
@@ -371,7 +372,19 @@ int main(int argc, char *argv[]) {
 			pxf[i].px_fdc = pfield->px_fdc;
 		}
 
-		if(0 > PX_create_file(pxindexdoc, pxf, numprimkeys, outputfile, pxfFileTypPrimIndex)) {
+		if((pxdoc->px_head->px_filetype == pxfFileTypIndexDB) ||
+		   (pxdoc->px_head->px_filetype == pxfFileTypNonIndexDB))
+			filetype = pxfFileTypPrimIndex;
+		else
+		if((pxdoc->px_head->px_filetype == pxfFileTypNonIncSecIndex) ||
+		   (pxdoc->px_head->px_filetype == pxfFileTypIncSecIndex))
+			filetype = pxfFileTypSecIndex;
+		else
+		if((pxdoc->px_head->px_filetype == pxfFileTypNonIncSecIndexG) ||
+		   (pxdoc->px_head->px_filetype == pxfFileTypIncSecIndexG))
+			filetype = pxfFileTypSecIndexG;
+
+		if(0 > PX_create_file(pxindexdoc, pxf, numprimkeys, outputfile, filetype)) {
 			fprintf(stderr, _("Could not create primary index file."));
 			fprintf(stderr, "\n");
 			exit(1);
