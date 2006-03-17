@@ -39,7 +39,7 @@ void usage(char *progname) {
 
 	printf(_("Version: %s %s http://sourceforge.net/projects/pxlib"), progname, VERSION);
 	printf("\n");
-	printf(_("Copyright: Copyright (C) 2003 Uwe Steinmann <uwe@steinmann.cx>"));
+	printf(_("Copyright: Copyright (C) 2003-2006 Uwe Steinmann <uwe@steinmann.cx>"));
 	printf("\n\n");
 	printf(_("Usage: %s [OPTIONS] FILE"), progname);
 	printf("\n\n");
@@ -53,7 +53,7 @@ void usage(char *progname) {
 	printf("\n");
 	printf(_("  -d, --database-file=FILE read database from this file."));
 	printf("\n");
-	printf(_("  -s, --secindex=NUMBER create a secondary from field NUMBER."));
+	printf(_("  -s, --secindex=NUMBER create a secondary index from field NUMBER."));
 	printf("\n");
 #ifdef HAVE_GSF
 	if(PX_has_gsf_support()) {
@@ -173,7 +173,15 @@ int main(int argc, char *argv[]) {
 	}
 
 	if(!outputfile) {
-		fprintf(stderr, _("You must at least specify an output file."));
+		fprintf(stderr, _("You must at least specify an output file and a database."));
+		fprintf(stderr, "\n");
+		fprintf(stderr, "\n");
+		usage(progname);
+		exit(1);
+	}
+
+	if(!inputfile) {
+		fprintf(stderr, _("Cannot create an index if no database is given."));
 		fprintf(stderr, "\n");
 		fprintf(stderr, "\n");
 		usage(progname);
