@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pxindex 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-17 13:38+0100\n"
+"POT-Creation-Date: 2006-03-17 14:45+0100\n"
 "PO-Revision-Date: 2003-03-05 08:51+0100\n"
 "Last-Translator: Uwe Steinmann <uwe@steinmann.cx>\n"
 "Language-Team: de <uwe@steinmann.cx>\n"
@@ -112,91 +112,96 @@ msgstr "libpx ist Version: %d.%d.%d"
 
 #: ../src/main.c:176
 #, c-format
-msgid "You must at least specify an output file."
-msgstr "Sie müssen mindestes eine Ausgabedatei angegeben."
+msgid "You must at least specify an output file and a database."
+msgstr "Sie müssen mindestes eine Ausgabedatei und Datenbank angegeben."
 
-#: ../src/main.c:191 ../src/main.c:250
+#: ../src/main.c:184
+#, c-format
+msgid "Cannot create an index if no database is given."
+msgstr "Kann den Index nicht erzeugen, wenn keine Datenbank angegeben wurde."
+
+#: ../src/main.c:199 ../src/main.c:258
 #, c-format
 msgid "Could not create new paradox instance."
 msgstr "Konnte keine neue Paradox-Instanz erzeugen."
 
-#: ../src/main.c:210
+#: ../src/main.c:218
 #, c-format
 msgid "Could not open gsf input file."
 msgstr "Konnte Eingabedatei mit gsf-Bibliothek nicht öffnen."
 
-#: ../src/main.c:219 ../src/main.c:226
+#: ../src/main.c:227 ../src/main.c:234
 #, c-format
 msgid "Could not open input file."
 msgstr "Sie müssen mindestes eine Eingabedatei angegeben."
 
-#: ../src/main.c:238
+#: ../src/main.c:246
 #, c-format
 msgid "The database file has no primary key fields."
 msgstr "Die Datenbank hat keine Primärschlüsselfelder."
 
-#: ../src/main.c:266
+#: ../src/main.c:274
 #, c-format
 msgid "Could not get field definition of %i. secondary key field."
 msgstr "Konnte Felddefinition des %i. Sekundärschlüssels nicht erfragen."
 
-#: ../src/main.c:270
+#: ../src/main.c:278
 msgid "Allocate memory for field definitions."
 msgstr "Alloziere Speicher für Felddefinitionen."
 
-#: ../src/main.c:271
+#: ../src/main.c:279
 #, c-format
 msgid "Could not allocate memory for field definitions."
 msgstr "Konnte Speicher für Felddefinitionen nicht allozieren."
 
-#: ../src/main.c:283 ../src/main.c:314 ../src/main.c:377
+#: ../src/main.c:291 ../src/main.c:322 ../src/main.c:385
 #, c-format
 msgid "Could not get field definition of %i. primary key field."
 msgstr "Konnte Felddefinition des %i. Primärschlüssels nicht erfragen."
 
-#: ../src/main.c:298
+#: ../src/main.c:306
 #, c-format
 msgid "Could not create secondary index file."
 msgstr "Konnte Datei für den Sekundärindex nicht anlegen."
 
-#: ../src/main.c:325
+#: ../src/main.c:333
 msgid "Allocate memory for record data of database file."
 msgstr "Alloziere Speicher für Datensatz der Datenbank."
 
-#: ../src/main.c:326
+#: ../src/main.c:334
 #, c-format
 msgid "Could not allocate memory for record data of database file."
 msgstr "Konnte Speicher für einen Datensatz der Datenbank nicht allozieren."
 
-#: ../src/main.c:330
+#: ../src/main.c:338
 msgid "Allocate memory for record data of index file."
 msgstr "Alloziere Speicher für Datensätze der Indexdatei."
 
-#: ../src/main.c:331
+#: ../src/main.c:339
 #, c-format
 msgid "Could not allocate memory for record data of index file."
 msgstr "Konnte Speicher für einen Datensatz der Indexdatei nicht allozieren."
 
 #. sort the records by the secondary index
-#: ../src/main.c:336
+#: ../src/main.c:344
 msgid "Allocate memory for sorting records."
 msgstr "Alloziere Speicher zum Sortiern der Datensätze."
 
-#: ../src/main.c:341
+#: ../src/main.c:349
 msgid "Allocate memory for field data of secondary index."
 msgstr ""
 "Konnte Speicher für Felddefinitionen des Sekundärindex nicht allozieren."
 
-#: ../src/main.c:342
+#: ../src/main.c:350
 msgid "Allocate memory for field data of primary index."
 msgstr "Alloziere Speicher für Felddefinitionen des Primärschlüssels."
 
 #. Create the schema for the primary index file.
-#: ../src/main.c:369
+#: ../src/main.c:377
 msgid "Could not get memory for field definitions."
 msgstr "Konnte Speicher für Felddefinitionen nicht allozieren."
 
-#: ../src/main.c:400
+#: ../src/main.c:408
 #, c-format
 msgid "Could not create primary index file."
 msgstr "Konnte Datei für den Primärindex nicht anlegen."
