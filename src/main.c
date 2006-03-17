@@ -254,7 +254,7 @@ int main(int argc, char *argv[]) {
 
 	if(secindex) {
 		char *data, *datai;
-		int primindexlen, secindexlen, secindexoffset;
+		int primindexlen, secindexlen, secindextype, secindexoffset;
 		struct _sortdata {char *secdata; char *primdata; unsigned int recno; unsigned int blockno;};
 		typedef struct _sortdata sortdata_t;
 		sortdata_t *sortdata;
@@ -299,7 +299,11 @@ int main(int argc, char *argv[]) {
 			fprintf(stderr, "\n");
 			exit(1);
 		}
+		/* FIXME: This shouldn't be set by accessing the header,
+		 * because it has no effect, if the file is closed afterwards.
+		 */
 		pxindexdoc->px_head->px_indexfieldnumber = secindex;
+		pxindexdoc->px_head->px_sortorder = pxdoc->px_head->px_sortorder;
 
 		/* Determine offset and len of secondary index field */
 		secindexoffset = 0;
@@ -313,12 +317,11 @@ int main(int argc, char *argv[]) {
 			}
 			if(i == secindex-1) {
 				secindexlen = pfield->px_flen;
+				secindextype = pfield->px_ftype;
 				break;
 			}
 			secindexoffset += pfield->px_flen;
 		}
-		fprintf(stderr, "primary index: %d\n", primindexlen);
-		fprintf(stderr, "secondary index: %d, %d\n", secindexoffset, secindexlen);
 		if((data = pxdoc->malloc(pxdoc, pxdoc->px_head->px_recordsize, _("Allocate memory for record data of database file."))) == NULL) {
 			fprintf(stderr, _("Could not allocate memory for record data of database file."));
 			fprintf(stderr, "\n");
@@ -338,6 +341,15 @@ int main(int argc, char *argv[]) {
 				sortdata[i].secdata = pxdoc->malloc(pxdoc, secindexlen, _("Allocate memory for field data of secondary index."));
 				sortdata[i].primdata = pxdoc->malloc(pxdoc, primindexlen, _("Allocate memory for field data of primary index."));
 				memcpy(sortdata[i].secdata, &data[secindexoffset], secindexlen);
+				if(secindextype = pxfAlpha) {
+					int j;
+					char *str = sortdata[i].secdata;
+					for(j=0; j<secindexlen; j++) {
+						*str = toupper((int) *str);
+						str++;
+					}
+				}
+
 				memcpy(sortdata[i].primdata, &data[0], primindexlen);
 				sortdata[i].recno = i;
 				sortdata[i].blockno = pxdbinfo.number;
@@ -389,6 +401,11 @@ int main(int argc, char *argv[]) {
 			fprintf(stderr, "\n");
 			exit(1);
 		}
+		/* FIXME: This shouldn't be set by accessing the header,
+		 * because it has no effect, if the file is closed afterwards.
+		 */
+		pxindexdoc->px_head->px_sortorder = pxdoc->px_head->px_sortorder;
+
 		PX_write_primary_index(pxdoc, pxindexdoc);
 	}
 	/* }}} */
