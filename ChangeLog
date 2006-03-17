@@ -1,2 +1,19 @@
+2006-03-17  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (EXTRA_DIST): Add config.rpath, mkinstalldirs.
+
+2006-03-17  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (EXTRA_DIST): Add config.rpath, mkinstalldirs.
+
+2006-03-17  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): Add config.rpath, m4/ChangeLog.
+
+Version 0.0.2
+	- added support for secondary index files
+	- fixed various compiler warnings
+
 Version 0.0.1
 	- initial version
