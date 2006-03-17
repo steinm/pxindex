@@ -2,7 +2,7 @@ Summary: Program to read and convert Paradox DB files
 Name: pxindex
 Version: @PACKAGE_VERSION@
 Release: 1
-Copyright: see doc/COPYING
+License: see doc/COPYING
 Group: Applications/Utils
 Url: http://pxlib.sourceforge.net/
 Packager: Uwe Steinmann <uwe@steinmann.cx>
