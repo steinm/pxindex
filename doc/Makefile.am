@@ -1,6 +1,6 @@
 
 %.1: %.sgml
-	docbook-to-man $< > $@
+	$(DOC_TO_MAN) $< > $@
 
 distclean: clean
 
