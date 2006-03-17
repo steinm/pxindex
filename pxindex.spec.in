@@ -33,3 +33,4 @@ rm -rf ${RPM_BUILD_ROOT}
 %attr(-,root,root) %doc README AUTHORS ChangeLog COPYING INSTALL
 %attr(-,root,root) %{prefix}/bin/*
 %attr(-,root,root) %{prefix}/share/man/man1/*
+%attr(-,root,root) %{prefix}/share/locale/*/LC_MESSAGES/*
