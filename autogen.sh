@@ -15,10 +15,10 @@ for i in config.guess config.sub missing install-sh mkinstalldirs ; do
 	chmod 755 ${i}
 done
 
+intltoolize --copy --force
 aclocal
 autoheader
 automake --verbose --foreign --add-missing --copy
-intltoolize --copy --force
 autoconf
 
 # For the Debian build
